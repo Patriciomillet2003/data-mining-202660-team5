@@ -1,0 +1,39 @@
+==========================================================================
+TASK 1 - REGRESSION MODEL COMPARISON & RESIDUAL DIAGNOSTICS
+==========================================================================
+Data: exam2_team5_smartgrid.csv | rows=600 | features=5 | nulls=0
+Split 80/20 random_state=42: train=480 test=120
+Target power_demand_mw: mean 92.37 MW, std 35.04 MW
+
+Holdout test metrics (n = 120):
+                   Model  Train_R2     R2  Adj_R2    MAE   RMSE
+          1 Baseline OLS    0.9929 0.9907  0.9903 2.6274 3.3480
+        2 Log-target OLS    0.9380 0.9317  0.9287 7.2567 9.0784
+3 Polynomial OLS (deg 2)    0.9930 0.9907  0.9902 2.6570 3.3581
+
+Best regression model by test RMSE: 1 Baseline OLS
+
+Residual health checks (best model, train residuals):
+  Mean residual: 0.0000 MW
+  Residual std, low vs high fitted half: 2.76 vs 3.15 MW
+  Durbin-Watson: 2.061 (about 2 = independent)
+  Shapiro-Wilk p-value: 0.0050 (> 0.05 = consistent with normal)
+Figure: reports\exam2\task1_residual_dashboard.png
+
+==========================================================================
+TASK 2 - ANN TRAINING & LOSS CONVERGENCE
+==========================================================================
+MLPRegressor(64, 32), relu, adam, early_stopping=True, random_state=42
+Epochs run: 566 | best validation R2 (10% of train): 0.9848
+Test: R2 0.9863 | Adj R2 0.9857 | MAE 3.23 MW | RMSE 4.06 MW
+
+All 4 models on the same holdout:
+                   Model     R2  Adj_R2    MAE   RMSE
+          1 Baseline OLS 0.9907  0.9903 2.6274 3.3480
+        2 Log-target OLS 0.9317  0.9287 7.2567 9.0784
+3 Polynomial OLS (deg 2) 0.9907  0.9902 2.6570 3.3581
+          4 ANN (64, 32) 0.9863  0.9857 3.2287 4.0646
+Winning model (lowest test RMSE): 1 Baseline OLS
+Saved models/best_model.joblib (1 Baseline OLS), models/scaler.joblib, models/ann_model.joblib
+Reload check: max |reloaded - original| = 0.00e+00 MW
+Figure: reports\exam2\task2_loss_curve.png
