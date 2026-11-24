@@ -4,3 +4,6 @@ __pycache__/
 .vscode/
 # Confidential Big99 exports: never commit raw files (client names, invoices, customs IDs)
 data/raw/
+# API keys for the dashboard's LLM assistant
+secrets.toml
+.env
