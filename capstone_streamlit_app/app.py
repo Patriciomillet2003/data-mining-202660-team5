@@ -1,14 +1,17 @@
 """
-IIND4417 — Capstone Milestone 3, Team 5
-Big99 Inventory Intelligence: slow-mover decision dashboard.
+IIND4417 — Final Capstone, Team 5
+Big99 Inventory Intelligence: slow-mover decision dashboard with an LLM assistant.
 
 Loads pre-trained artifacts from models/*.joblib (see train_models.py); nothing
-is trained when the app starts.
+is trained when the app starts. The assistant panel (see assistant.py) needs an
+Anthropic API key in .streamlit/secrets.toml or the ANTHROPIC_API_KEY variable;
+without it the four tabs still work.
 
 From capstone_streamlit_app/:
     streamlit run app.py
 """
 import json
+import os
 from pathlib import Path
 
 import joblib
@@ -18,6 +21,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import sklearn
 import streamlit as st
+from streamlit.errors import StreamlitSecretNotFoundError
+
+import assistant
 
 APP = Path(__file__).resolve().parent
 MODELS = APP / "models"
@@ -34,6 +40,7 @@ FAMILY = {"Random Forest": "Classical ensemble", "Decision Tree": "Classical tre
 LABELS = {"page_counter_k": "Page counter (thousands)", "landed_cost_mxn": "Landed cost (MXN)",
           AGE: "Days in stock", "brand": "Brand", "line": "Product line",
           "warehouse": "Warehouse", "appearance": "Appearance", "copy_quality": "Copy quality"}
+ASSISTANT_PLACES = ("Side panel", "Below the tabs", "Hidden")
 
 st.set_page_config(page_title="Big99 Inventory Intelligence", page_icon="📦", layout="wide",
                    initial_sidebar_state="expanded")
@@ -56,12 +63,32 @@ def load_artifacts(files):
     return joblib.load(MODELS / "preprocessor.joblib"), joblib.load(MODELS / "standard_scaler.joblib"), models
 
 
-def raw_score(name, row):
-    """Stall probability, or predicted log1p(days) for the regression model."""
-    Z = preprocessor.transform(row)
+@st.cache_data
+def load_fact_sheet():
+    """Everything the assistant may quote about the data and the models, built once per server."""
+    explain = json.loads((MODELS / "explainability.json").read_text())
+    return assistant.build_fact_sheet(load_data(), load_metrics(), explain)
+
+
+def setting(name, default=None):
+    """Read a deployment setting from .streamlit/secrets.toml, then from the environment."""
+    try:
+        value = st.secrets.get(name)
+    except (FileNotFoundError, StreamlitSecretNotFoundError):
+        value = None
+    return value or os.environ.get(name) or default
+
+
+def raw_scores(name, frame):
+    """Stall probability, or predicted log1p(days) for the regression model, for every row."""
+    Z = preprocessor.transform(frame)
     if policy[name]["kind"] == "regression":
-        return float(models[name].predict(Z)[0])
-    return float(models[name].predict_proba(Z)[0, 1])
+        return models[name].predict(Z)
+    return models[name].predict_proba(Z)[:, 1]
+
+
+def raw_score(name, row):
+    return float(raw_scores(name, row)[0])
 
 
 def risk_band(name, score):
@@ -95,6 +122,8 @@ for key, value in DEFAULTS.items():
     st.session_state.setdefault(key, value)
 st.session_state.setdefault("history", [])
 st.session_state.setdefault("active_model", meta["champion"])
+st.session_state.setdefault("assistant_chat", [])
+st.session_state.setdefault("assistant_place", ASSISTANT_PLACES[0])
 
 
 def reset_scenario():
@@ -119,7 +148,7 @@ def load_preset(which):
 # Sidebar
 # ------------------------------------------------------------------------------
 st.sidebar.title("📦 Big99 Inventory Intelligence")
-st.sidebar.caption("IIND4417 · Capstone Milestone 3 · Team 5")
+st.sidebar.caption("IIND4417 · Final Capstone · Team 5")
 st.sidebar.divider()
 st.sidebar.selectbox("Active model", model_names, key="active_model",
                      format_func=lambda n: f"{n} ★ champion" if n == meta["champion"] else n)
@@ -130,6 +159,10 @@ if rule["kind"] == "regression":
 else:
     st.sidebar.caption(f"WATCH from {rule['watch']:.2f} · HIGH from {rule['high']:.2f} stall probability. "
                        "Cut-offs were tuned on out-of-fold training lots.")
+st.sidebar.divider()
+st.sidebar.radio("AI assistant", ASSISTANT_PLACES, key="assistant_place",
+                 help="Side panel keeps the chat next to the sliders on a wide screen. "
+                      "On a small screen, 'Below the tabs' leaves the tabs their full width.")
 st.sidebar.divider()
 st.sidebar.markdown("**Serialized artifacts loaded**")
 st.sidebar.code("\n".join(["preprocessor.joblib", "standard_scaler.joblib", *meta["files"].values()]), language=None)
@@ -154,8 +187,18 @@ kpi4.metric("Active model ROC-AUC", f"{results[active]['cv_auc_mean']:.3f}",
             f"{active} · 4-fold grouped CV", delta_color="off")
 st.divider()
 
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Data Explorer & EDA", "⚙️ Preprocessing & Correlation",
-                                  "🤖 Multi-Model Benchmark", "🔮 What-If Inference"])
+# The assistant sits beside the tabs so it stays in view while the sliders move;
+# on a narrow screen it can go below them instead.
+place = st.session_state["assistant_place"]
+if place == "Side panel":
+    tabs_area, assistant_area = st.columns([7, 3], gap="medium")
+elif place == "Below the tabs":
+    tabs_area, assistant_area = st.container(), st.container()
+else:
+    tabs_area, assistant_area = st.container(), None
+
+tab1, tab2, tab3, tab4 = tabs_area.tabs(["📊 Data Explorer & EDA", "⚙️ Preprocessing & Correlation",
+                                         "🤖 Multi-Model Benchmark", "🔮 What-If Inference"])
 
 # ------------------------------------------------------------------------------
 # Tab 1: Data Explorer
@@ -401,3 +444,75 @@ with tab4:
         if st.button("Clear scenarios"):
             st.session_state.history = []
             st.rerun()
+
+# ------------------------------------------------------------------------------
+# LLM assistant: grounded on the fact sheet and on the scenario set in Tab 4
+# ------------------------------------------------------------------------------
+def current_scenario():
+    """What Tab 4 shows right now, plus how the other models score the same unit."""
+    per_model = {}
+    for name in model_names:
+        value = raw_score(name, row)
+        per_model[name] = {"kind": policy[name]["kind"], "score": value, "band": risk_band(name, value)}
+    return {
+        "inputs": row.iloc[0].to_dict(), "days_in_stock": days, "landed_cost": cost,
+        "active_model": active, "action": action, "models": per_model,
+        "what_changes_it": assistant.counterfactuals(
+            row, df, meta, lambda frame: raw_scores(active, frame), policy[active]["kind"]),
+    }
+
+
+def queue_question(text):
+    st.session_state["queued_question"] = text
+
+
+def clear_chat():
+    st.session_state["assistant_chat"] = []
+
+
+def render_assistant():
+    st.markdown("##### 🤖 Inventory assistant")
+    api_key = setting("ANTHROPIC_API_KEY")
+    model_id = setting("ANTHROPIC_MODEL", assistant.DEFAULT_MODEL)
+    if not api_key:
+        st.info("The assistant is off because no API key was found. Add `ANTHROPIC_API_KEY = \"...\"` to "
+                "`.streamlit/secrets.toml` (see `secrets.toml.example`) or set it as an environment "
+                "variable, then restart the app.")
+        return
+    st.caption(f"Answers only from this dashboard's data, benchmark and live what-if scenario · {model_id}")
+
+    log = st.container(height=440, border=True)
+    for turn in st.session_state["assistant_chat"]:
+        log.chat_message("user").write(turn["question"])
+        log.chat_message("assistant").write(turn["answer"])
+    if not st.session_state["assistant_chat"]:
+        log.caption("Ask in English or Spanish. The assistant sees the unit you set in the What-If tab.")
+
+    typed = st.chat_input("Ask about the data, the models or this unit",
+                          max_chars=assistant.MAX_QUESTION_CHARS, key="assistant_input")
+    chips = st.container(horizontal=True, gap="small")
+    for label, text in assistant.SUGGESTED.items():
+        chips.button(label, key=f"suggest_{label}", help=text, on_click=queue_question, args=(text,))
+    question = typed or st.session_state.pop("queued_question", None)
+
+    if question:
+        log.chat_message("user").write(question)
+        messages = assistant.build_messages(st.session_state["assistant_chat"], question,
+                                            assistant.scenario_facts(current_scenario()))
+        try:
+            with log.chat_message("assistant"):
+                answer = st.write_stream(assistant.stream_answer(api_key, model_id, load_fact_sheet(), messages))
+        except assistant.API_ERRORS as err:
+            log.error(assistant.explain_error(err))
+        else:
+            if answer:
+                st.session_state["assistant_chat"].append({"question": question, "answer": answer})
+            else:
+                log.warning("The assistant returned an empty answer. Ask again.")
+    if st.session_state["assistant_chat"]:
+        st.button("Clear conversation", on_click=clear_chat, type="tertiary")
+
+
+if assistant_area is not None:
+    with assistant_area:
+        render_assistant()
