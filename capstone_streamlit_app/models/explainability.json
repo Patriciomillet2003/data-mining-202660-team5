@@ -1,0 +1,739 @@
+{
+ "basis": {
+  "holdout_units": 275,
+  "holdout_lots": 25,
+  "repeats": 30,
+  "metric": "drop in hold-out ROC-AUC",
+  "partial_effect_units": 1091
+ },
+ "models": {
+  "Random Forest": {
+   "kind": "probability",
+   "score_unit": "mean stall probability",
+   "holdout_roc_auc": 0.6872,
+   "card": {
+    "estimator": "RandomForestClassifier",
+    "n_estimators": 400,
+    "max_depth": 8,
+    "min_samples_leaf": 5,
+    "class_weight": "balanced"
+   },
+   "permutation_importance": [
+    {
+     "feature": "page_counter_k",
+     "auc_drop_mean": 0.0942,
+     "auc_drop_std": 0.0184
+    },
+    {
+     "feature": "brand",
+     "auc_drop_mean": 0.0332,
+     "auc_drop_std": 0.0106
+    },
+    {
+     "feature": "warehouse",
+     "auc_drop_mean": 0.0226,
+     "auc_drop_std": 0.0183
+    },
+    {
+     "feature": "appearance",
+     "auc_drop_mean": 0.0222,
+     "auc_drop_std": 0.0123
+    },
+    {
+     "feature": "copy_quality",
+     "auc_drop_mean": 0.0116,
+     "auc_drop_std": 0.0103
+    },
+    {
+     "feature": "acc_dsdf",
+     "auc_drop_mean": 0.0094,
+     "auc_drop_std": 0.004
+    },
+    {
+     "feature": "acc_usend",
+     "auc_drop_mean": 0.0083,
+     "auc_drop_std": 0.0027
+    },
+    {
+     "feature": "acc_radf",
+     "auc_drop_mean": 0.004,
+     "auc_drop_std": 0.0047
+    },
+    {
+     "feature": "acc_fax",
+     "auc_drop_mean": 0.0024,
+     "auc_drop_std": 0.0053
+    },
+    {
+     "feature": "acc_duplex",
+     "auc_drop_mean": 0.0012,
+     "auc_drop_std": 0.0013
+    },
+    {
+     "feature": "working",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "acc_finisher",
+     "auc_drop_mean": -0.003,
+     "auc_drop_std": 0.003
+    },
+    {
+     "feature": "landed_cost_mxn",
+     "auc_drop_mean": -0.0216,
+     "auc_drop_std": 0.0094
+    },
+    {
+     "feature": "line",
+     "auc_drop_mean": -0.0285,
+     "auc_drop_std": 0.0127
+    }
+   ],
+   "partial_effects": {
+    "brand": {
+     "SHARP": 0.4061,
+     "CANON": 0.4712,
+     "KONICA MINOLTA": 0.4659,
+     "RICOH": 0.4712,
+     "KYOCERA": 0.4294,
+     "XEROX": 0.3756,
+     "TOSHIBA": 0.4549,
+     "COPYSTAR": 0.4386,
+     "SAVIN": 0.4495,
+     "LANIER": 0.4497
+    },
+    "line": {
+     "CO/A3/20-35": 0.3786,
+     "MO/A4/20-70": 0.4067,
+     "MO/A3/36-55": 0.4383,
+     "MO/A3/20-35": 0.5736,
+     "CO/A4/20-50": 0.3953,
+     "CO/A3/36-60": 0.4136,
+     "MO/A3/56-80": 0.4096,
+     "CO/A3/61-90": 0.4246,
+     "SIN LINEA": 0.4193
+    },
+    "warehouse": {
+     "MID": 0.3461,
+     "MEX": 0.4965,
+     "MTY": 0.4691,
+     "GDL": 0.4678
+    },
+    "appearance": {
+     "BUENO": 0.463,
+     "EXCELENTE": 0.3015,
+     "REGULAR": 0.399
+    },
+    "copy_quality": {
+     "BUENO": 0.456,
+     "EXCELENTE": 0.3438,
+     "REGULAR": 0.4201
+    },
+    "working": {
+     "SI": 0.4297,
+     "NO": 0.4297
+    },
+    "page_counter_k": {
+     "P10": {
+      "input": 42.3,
+      "score": 0.3623
+     },
+     "P50": {
+      "input": 140.0,
+      "score": 0.4158
+     },
+     "P90": {
+      "input": 289.7,
+      "score": 0.5252
+     }
+    },
+    "landed_cost_mxn": {
+     "P10": {
+      "input": 3536.0,
+      "score": 0.4269
+     },
+     "P50": {
+      "input": 7691.42,
+      "score": 0.4358
+     },
+     "P90": {
+      "input": 12521.82,
+      "score": 0.4395
+     }
+    },
+    "acc_duplex": {
+     "0": 0.4352,
+     "1": 0.4362
+    },
+    "acc_dsdf": {
+     "0": 0.4524,
+     "1": 0.4244
+    },
+    "acc_fax": {
+     "0": 0.4513,
+     "1": 0.4161
+    },
+    "acc_radf": {
+     "0": 0.4255,
+     "1": 0.4507
+    },
+    "acc_finisher": {
+     "0": 0.4238,
+     "1": 0.4426
+    },
+    "acc_usend": {
+     "0": 0.4264,
+     "1": 0.4778
+    }
+   }
+  },
+  "Decision Tree": {
+   "kind": "probability",
+   "score_unit": "mean stall probability",
+   "holdout_roc_auc": 0.5652,
+   "card": {
+    "estimator": "DecisionTreeClassifier",
+    "max_depth": 4,
+    "min_samples_leaf": 10,
+    "class_weight": "balanced",
+    "leaves": 10
+   },
+   "permutation_importance": [
+    {
+     "feature": "page_counter_k",
+     "auc_drop_mean": 0.0801,
+     "auc_drop_std": 0.0175
+    },
+    {
+     "feature": "appearance",
+     "auc_drop_mean": 0.0491,
+     "auc_drop_std": 0.0211
+    },
+    {
+     "feature": "warehouse",
+     "auc_drop_mean": 0.0055,
+     "auc_drop_std": 0.0138
+    },
+    {
+     "feature": "acc_fax",
+     "auc_drop_mean": 0.0004,
+     "auc_drop_std": 0.0002
+    },
+    {
+     "feature": "brand",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "copy_quality",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "working",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "acc_duplex",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "acc_dsdf",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "acc_radf",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "acc_finisher",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "acc_usend",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "landed_cost_mxn",
+     "auc_drop_mean": -0.0482,
+     "auc_drop_std": 0.012
+    },
+    {
+     "feature": "line",
+     "auc_drop_mean": -0.0796,
+     "auc_drop_std": 0.0276
+    }
+   ],
+   "partial_effects": {
+    "brand": {
+     "SHARP": 0.4326,
+     "CANON": 0.4326,
+     "KONICA MINOLTA": 0.4572,
+     "RICOH": 0.4326,
+     "KYOCERA": 0.4326,
+     "XEROX": 0.4326,
+     "TOSHIBA": 0.4326,
+     "COPYSTAR": 0.4326,
+     "SAVIN": 0.4326,
+     "LANIER": 0.4326
+    },
+    "line": {
+     "CO/A3/20-35": 0.3737,
+     "MO/A4/20-70": 0.3737,
+     "MO/A3/36-55": 0.3737,
+     "MO/A3/20-35": 0.6953,
+     "CO/A4/20-50": 0.3737,
+     "CO/A3/36-60": 0.3737,
+     "MO/A3/56-80": 0.3737,
+     "CO/A3/61-90": 0.3737,
+     "SIN LINEA": 0.3737
+    },
+    "warehouse": {
+     "MID": 0.3702,
+     "MEX": 0.4721,
+     "MTY": 0.4286,
+     "GDL": 0.4721
+    },
+    "appearance": {
+     "BUENO": 0.4833,
+     "EXCELENTE": 0.0251,
+     "REGULAR": 0.4833
+    },
+    "copy_quality": {
+     "BUENO": 0.4357,
+     "EXCELENTE": 0.4357,
+     "REGULAR": 0.4357
+    },
+    "working": {
+     "SI": 0.4357,
+     "NO": 0.4357
+    },
+    "page_counter_k": {
+     "P10": {
+      "input": 42.3,
+      "score": 0.3016
+     },
+     "P50": {
+      "input": 140.0,
+      "score": 0.3396
+     },
+     "P90": {
+      "input": 289.7,
+      "score": 0.5749
+     }
+    },
+    "landed_cost_mxn": {
+     "P10": {
+      "input": 3536.0,
+      "score": 0.4078
+     },
+     "P50": {
+      "input": 7691.42,
+      "score": 0.4078
+     },
+     "P90": {
+      "input": 12521.82,
+      "score": 0.4078
+     }
+    },
+    "acc_duplex": {
+     "0": 0.4357,
+     "1": 0.4357
+    },
+    "acc_dsdf": {
+     "0": 0.4357,
+     "1": 0.4357
+    },
+    "acc_fax": {
+     "0": 0.4376,
+     "1": 0.4304
+    },
+    "acc_radf": {
+     "0": 0.4357,
+     "1": 0.4357
+    },
+    "acc_finisher": {
+     "0": 0.4357,
+     "1": 0.4357
+    },
+    "acc_usend": {
+     "0": 0.4357,
+     "1": 0.4357
+    }
+   },
+   "rules": "|--- appearance_EXCELENTE <= 0.50\n|   |--- line_MO/A3/20-35 <= 0.50\n|   |   |--- page_counter_k <= 0.30\n|   |   |   |--- landed_cost_mxn <= -1.33\n|   |   |   |   |--- class: 1\n|   |   |   |--- landed_cost_mxn >  -1.33\n|   |   |   |   |--- class: 0\n|   |   |--- page_counter_k >  0.30\n|   |   |   |--- warehouse_MID <= 0.50\n|   |   |   |   |--- class: 1\n|   |   |   |--- warehouse_MID >  0.50\n|   |   |   |   |--- class: 0\n|   |--- line_MO/A3/20-35 >  0.50\n|   |   |--- page_counter_k <= -0.12\n|   |   |   |--- warehouse_MTY <= 0.50\n|   |   |   |   |--- class: 1\n|   |   |   |--- warehouse_MTY >  0.50\n|   |   |   |   |--- class: 0\n|   |   |--- page_counter_k >  -0.12\n|   |   |   |--- acc_fax <= 0.50\n|   |   |   |   |--- class: 1\n|   |   |   |--- acc_fax >  0.50\n|   |   |   |   |--- class: 1\n|--- appearance_EXCELENTE >  0.50\n|   |--- brand_KONICA MINOLTA <= 0.50\n|   |   |--- class: 0\n|   |--- brand_KONICA MINOLTA >  0.50\n|   |   |--- class: 0\n"
+  },
+  "MLR": {
+   "kind": "regression",
+   "score_unit": "median predicted days in stock",
+   "holdout_roc_auc": 0.7169,
+   "card": {
+    "estimator": "LinearRegression",
+    "target": "log1p(days_in_stock)",
+    "coefficients": 39
+   },
+   "permutation_importance": [
+    {
+     "feature": "appearance",
+     "auc_drop_mean": 0.0872,
+     "auc_drop_std": 0.0201
+    },
+    {
+     "feature": "page_counter_k",
+     "auc_drop_mean": 0.0664,
+     "auc_drop_std": 0.0136
+    },
+    {
+     "feature": "warehouse",
+     "auc_drop_mean": 0.0583,
+     "auc_drop_std": 0.0214
+    },
+    {
+     "feature": "brand",
+     "auc_drop_mean": 0.0533,
+     "auc_drop_std": 0.0208
+    },
+    {
+     "feature": "acc_usend",
+     "auc_drop_mean": 0.014,
+     "auc_drop_std": 0.0061
+    },
+    {
+     "feature": "acc_duplex",
+     "auc_drop_mean": 0.0093,
+     "auc_drop_std": 0.0136
+    },
+    {
+     "feature": "landed_cost_mxn",
+     "auc_drop_mean": 0.0071,
+     "auc_drop_std": 0.0051
+    },
+    {
+     "feature": "copy_quality",
+     "auc_drop_mean": 0.0069,
+     "auc_drop_std": 0.0043
+    },
+    {
+     "feature": "acc_finisher",
+     "auc_drop_mean": 0.0036,
+     "auc_drop_std": 0.0031
+    },
+    {
+     "feature": "acc_fax",
+     "auc_drop_mean": 0.0034,
+     "auc_drop_std": 0.005
+    },
+    {
+     "feature": "acc_dsdf",
+     "auc_drop_mean": 0.0025,
+     "auc_drop_std": 0.005
+    },
+    {
+     "feature": "acc_radf",
+     "auc_drop_mean": 0.0014,
+     "auc_drop_std": 0.0056
+    },
+    {
+     "feature": "working",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "line",
+     "auc_drop_mean": -0.0119,
+     "auc_drop_std": 0.0199
+    }
+   ],
+   "partial_effects": {
+    "brand": {
+     "SHARP": 55.2488,
+     "CANON": 58.8654,
+     "KONICA MINOLTA": 77.5433,
+     "RICOH": 110.8558,
+     "KYOCERA": 43.6408,
+     "XEROX": 27.0342,
+     "TOSHIBA": 66.1233,
+     "COPYSTAR": 36.9043,
+     "SAVIN": 84.2693,
+     "LANIER": 47.4666
+    },
+    "line": {
+     "CO/A3/20-35": 45.5676,
+     "MO/A4/20-70": 47.2485,
+     "MO/A3/36-55": 68.094,
+     "MO/A3/20-35": 105.3955,
+     "CO/A4/20-50": 58.596,
+     "CO/A3/36-60": 60.53,
+     "MO/A3/56-80": 46.1183,
+     "CO/A3/61-90": 111.2591,
+     "SIN LINEA": 37.5573
+    },
+    "warehouse": {
+     "MID": 36.9883,
+     "MEX": 70.7658,
+     "MTY": 65.4049,
+     "GDL": 72.1951
+    },
+    "appearance": {
+     "BUENO": 67.2648,
+     "EXCELENTE": 17.9217,
+     "REGULAR": 74.4594
+    },
+    "copy_quality": {
+     "BUENO": 58.068,
+     "EXCELENTE": 44.7917,
+     "REGULAR": 192.9102
+    },
+    "working": {
+     "SI": 57.8213,
+     "NO": 502.6845
+    },
+    "page_counter_k": {
+     "P10": {
+      "input": 42.3,
+      "score": 44.8086
+     },
+     "P50": {
+      "input": 140.0,
+      "score": 63.6778
+     },
+     "P90": {
+      "input": 289.7,
+      "score": 78.9033
+     }
+    },
+    "landed_cost_mxn": {
+     "P10": {
+      "input": 3536.0,
+      "score": 63.3216
+     },
+     "P50": {
+      "input": 7691.42,
+      "score": 56.6274
+     },
+     "P90": {
+      "input": 12521.82,
+      "score": 52.7891
+     }
+    },
+    "acc_duplex": {
+     "0": 116.9553,
+     "1": 57.2462
+    },
+    "acc_dsdf": {
+     "0": 65.5143,
+     "1": 55.5231
+    },
+    "acc_fax": {
+     "0": 62.0403,
+     "1": 53.8662
+    },
+    "acc_radf": {
+     "0": 55.5231,
+     "1": 65.5143
+    },
+    "acc_finisher": {
+     "0": 56.4352,
+     "1": 62.4689
+    },
+    "acc_usend": {
+     "0": 56.4352,
+     "1": 93.5706
+    }
+   }
+  },
+  "ANN": {
+   "kind": "probability",
+   "score_unit": "mean stall probability",
+   "holdout_roc_auc": 0.671,
+   "card": {
+    "estimator": "MLPClassifier",
+    "hidden_layers": [
+     32,
+     16
+    ],
+    "activation": "relu",
+    "alpha": 0.01,
+    "learning_rate_init": 0.001,
+    "batch_size": 32,
+    "trainable_parameters": 1825
+   },
+   "permutation_importance": [
+    {
+     "feature": "page_counter_k",
+     "auc_drop_mean": 0.0702,
+     "auc_drop_std": 0.0167
+    },
+    {
+     "feature": "appearance",
+     "auc_drop_mean": 0.0403,
+     "auc_drop_std": 0.0179
+    },
+    {
+     "feature": "brand",
+     "auc_drop_mean": 0.0198,
+     "auc_drop_std": 0.0156
+    },
+    {
+     "feature": "copy_quality",
+     "auc_drop_mean": 0.0124,
+     "auc_drop_std": 0.0076
+    },
+    {
+     "feature": "warehouse",
+     "auc_drop_mean": 0.0117,
+     "auc_drop_std": 0.0161
+    },
+    {
+     "feature": "acc_usend",
+     "auc_drop_mean": 0.01,
+     "auc_drop_std": 0.0041
+    },
+    {
+     "feature": "acc_radf",
+     "auc_drop_mean": 0.0098,
+     "auc_drop_std": 0.0063
+    },
+    {
+     "feature": "acc_finisher",
+     "auc_drop_mean": 0.0055,
+     "auc_drop_std": 0.0053
+    },
+    {
+     "feature": "acc_dsdf",
+     "auc_drop_mean": 0.0053,
+     "auc_drop_std": 0.0086
+    },
+    {
+     "feature": "acc_duplex",
+     "auc_drop_mean": 0.0003,
+     "auc_drop_std": 0.0021
+    },
+    {
+     "feature": "working",
+     "auc_drop_mean": 0.0,
+     "auc_drop_std": 0.0
+    },
+    {
+     "feature": "acc_fax",
+     "auc_drop_mean": -0.0034,
+     "auc_drop_std": 0.0047
+    },
+    {
+     "feature": "landed_cost_mxn",
+     "auc_drop_mean": -0.0156,
+     "auc_drop_std": 0.0059
+    },
+    {
+     "feature": "line",
+     "auc_drop_mean": -0.0546,
+     "auc_drop_std": 0.0181
+    }
+   ],
+   "partial_effects": {
+    "brand": {
+     "SHARP": 0.2397,
+     "CANON": 0.3202,
+     "KONICA MINOLTA": 0.394,
+     "RICOH": 0.36,
+     "KYOCERA": 0.2008,
+     "XEROX": 0.1584,
+     "TOSHIBA": 0.1599,
+     "COPYSTAR": 0.1802,
+     "SAVIN": 0.2456,
+     "LANIER": 0.3486
+    },
+    "line": {
+     "CO/A3/20-35": 0.1967,
+     "MO/A4/20-70": 0.2166,
+     "MO/A3/36-55": 0.3044,
+     "MO/A3/20-35": 0.4869,
+     "CO/A4/20-50": 0.2684,
+     "CO/A3/36-60": 0.1606,
+     "MO/A3/56-80": 0.1437,
+     "CO/A3/61-90": 0.2994,
+     "SIN LINEA": 0.2173
+    },
+    "warehouse": {
+     "MID": 0.1614,
+     "MEX": 0.3184,
+     "MTY": 0.3258,
+     "GDL": 0.2801
+    },
+    "appearance": {
+     "BUENO": 0.2759,
+     "EXCELENTE": 0.0838,
+     "REGULAR": 0.283
+    },
+    "copy_quality": {
+     "BUENO": 0.2705,
+     "EXCELENTE": 0.1674,
+     "REGULAR": 0.3768
+    },
+    "working": {
+     "SI": 0.2667,
+     "NO": 0.4476
+    },
+    "page_counter_k": {
+     "P10": {
+      "input": 42.3,
+      "score": 0.1361
+     },
+     "P50": {
+      "input": 140.0,
+      "score": 0.2657
+     },
+     "P90": {
+      "input": 289.7,
+      "score": 0.4151
+     }
+    },
+    "landed_cost_mxn": {
+     "P10": {
+      "input": 3536.0,
+      "score": 0.2611
+     },
+     "P50": {
+      "input": 7691.42,
+      "score": 0.261
+     },
+     "P90": {
+      "input": 12521.82,
+      "score": 0.2638
+     }
+    },
+    "acc_duplex": {
+     "0": 0.2822,
+     "1": 0.267
+    },
+    "acc_dsdf": {
+     "0": 0.337,
+     "1": 0.2545
+    },
+    "acc_fax": {
+     "0": 0.2824,
+     "1": 0.2527
+    },
+    "acc_radf": {
+     "0": 0.2637,
+     "1": 0.3196
+    },
+    "acc_finisher": {
+     "0": 0.2495,
+     "1": 0.292
+    },
+    "acc_usend": {
+     "0": 0.2589,
+     "1": 0.4038
+    }
+   }
+  }
+ }
+}
