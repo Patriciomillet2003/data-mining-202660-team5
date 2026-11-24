@@ -86,6 +86,12 @@ def test_pooled_levels_are_not_quoted_as_model_effects(df, meta, sheet):
     assert "brand=LANIER" in sheet                      # but they are disclosed as a limitation
 
 
+def test_policy_never_uses_warehouse_as_a_lever():
+    """Warehouse risk mirrors stock age (MID holds the newest units), so no action may rely on it."""
+    for text in ((APP / "app.py").read_text(encoding="utf-8"), assistant.POLICY_ACTIONS):
+        assert "lowest-risk warehouse" not in text and "sending it to" not in text
+
+
 # ------------------------------------------------------------------------------
 # Request building and error wording
 # ------------------------------------------------------------------------------

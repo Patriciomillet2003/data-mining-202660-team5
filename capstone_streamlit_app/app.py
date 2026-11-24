@@ -419,11 +419,11 @@ with tab4:
             action = "Priority list"
             st.warning(f"⚠️ HIGH RISK: {SLOW_DAYS - days} days left before the discount rule.")
             st.markdown("**Procurement:** reopen the price or skip this configuration at the buy. "
-                        "**Commercial:** add it to Monday's priority list and avoid sending it to MEX.")
+                        "**Commercial:** add it to Monday's priority list.")
         elif band == "WATCH":
             action = "Watch list"
             st.info(f"👀 WATCH: {SLOW_DAYS - days} days left before the discount rule.")
-            st.markdown("**Inventory:** assign it to the lowest-risk warehouse and review the price at day 60.")
+            st.markdown("**Commercial:** keep it on the watch list and review the price at day 60.")
         else:
             action = "Normal flow"
             st.success(f"✅ NORMAL FLOW: low stall risk, {SLOW_DAYS - days} days left before the discount rule.")

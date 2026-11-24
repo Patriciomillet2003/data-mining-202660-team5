@@ -69,8 +69,8 @@ POLICY_ACTIONS = """\
 - 120 days or more: "25% DISCOUNT RULE TRIGGERED". Commercial Director: launch the 25% discount now, \
 i.e. sell at 75% of landed cost to release the cash.
 - HIGH band: Procurement reopens the price or skips this configuration at the buy; Commercial adds \
-the unit to Monday's priority list and avoids sending it to MEX.
-- WATCH band: Inventory assigns it to the lowest-risk warehouse and reviews the price at day 60.
+the unit to Monday's priority list.
+- WATCH band: Commercial keeps it on the watch list and reviews the price at day 60.
 - LOW band: normal flow, no manual action."""
 
 API_ERRORS = (anthropic.APIError,)
