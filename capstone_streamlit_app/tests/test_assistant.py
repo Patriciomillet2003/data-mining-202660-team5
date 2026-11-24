@@ -123,15 +123,22 @@ def test_api_errors_become_actionable_messages():
 # ------------------------------------------------------------------------------
 # The app itself, driven headless
 # ------------------------------------------------------------------------------
-def run_app(key=None):
+@pytest.fixture(autouse=True)
+def no_real_credentials(monkeypatch):
+    """Tests never touch the developer's key: the environment is cleared here and
+    run_app overrides whatever .streamlit/secrets.toml holds."""
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_MODEL", raising=False)
+
+
+def run_app(key=""):
     at = AppTest.from_file(str(APP / "app.py"), default_timeout=120)
-    if key:
-        at.secrets["ANTHROPIC_API_KEY"] = key
+    at.secrets["ANTHROPIC_API_KEY"] = key
+    at.secrets["ANTHROPIC_MODEL"] = ""
     return at.run()
 
 
-def test_dashboard_runs_without_a_key(monkeypatch):
-    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+def test_dashboard_runs_without_a_key():
     at = run_app()
     assert not at.exception
     assert len(at.tabs) == 4
