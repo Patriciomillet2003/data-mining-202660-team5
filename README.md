@@ -1,5 +1,4 @@
 # Data Mining 202660 - Team 5
-# Data Mining 202660 - Team 5
 
 Coursework for Data Mining & Modern AI Systems (IIND4417) at Universidad Anáhuac Mayab, academic period 202660, taught by Dr. Víctor Cardoso. The repository holds the class activities, Partial Exam 2 and the final capstone.
 
